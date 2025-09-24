@@ -110,6 +110,10 @@ Nest es un proyecto de código abierto con licencia MIT. Puede crecer gracias a 
 - Sitio web - [https://nestjs.com](https://nestjs.com/)
 - Twitter - [@nestframework](https://twitter.com/nestframework)
 
+<<<<<<< HEAD
 ## Licencia
+=======
+##  Licencia
+>>>>>>> d550e38492828eb820e40621a9b4a27116aba5e2
 
 Nest tiene [licencia MIT](https://github.com/nestjs/nest/blob/master/LICENSE).
