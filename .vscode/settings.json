@@ -1,0 +1,7 @@
+{
+  "material-icon-theme.activeIconPack": "nest", // Íconos visuales para NestJS
+  "files.eol": "\n", // Guarda los archivos con saltos de línea tipo Unix (LF)
+  "editor.formatOnSave": true, // Formatea automáticamente al guardar
+  "editor.defaultFormatter": "esbenp.prettier-vscode", // Usa Prettier como formateador por defecto
+  "prettier.endOfLine": "lf" // Prettier forzará LF como fin de línea
+}

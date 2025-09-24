@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+// ===============================
+// Gestion Auth
+// ===============================
+model authUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  firstName String
+  lastName  String
+  isActive  Int     @default(1) // 1: activo, 0: inactivo
+  state     Int     @default(1) // 1: activo, 0: inactivo
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relación con roles
+  authUserRoles authUserRoles[]
+  
+  // Tokens de recuperación
+  authPasswordResetTokens authPasswordResetTokens[]
+
+}
+
+model authRoles {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  state     Int     @default(1) // 1: activo, 0: inactivo
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relación con usuarios
+  authUserRoles authUserRoles[]
+  
+  // Relación con permisos
+  authRolePermissions authRolePermissions[]
+
+
+}
+
+model authUserRoles {
+  id     String @id @default(cuid())
+  idAuthUser  String
+  idAuthRoles  String
+  
+  authUser authUser @relation(fields: [idAuthUser ], references: [id], onDelete: Cascade)
+  authRoles authRoles @relation(fields: [idAuthRoles ], references: [id], onDelete: Cascade)
+  state     Int     @default(1) // 1: activo, 0: inactivo
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@unique([idAuthUser , idAuthRoles ])
+
+}
+
+model authPermissions {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  resource    String   // ej: 'users', 'posts', etc.
+  action      String   // ej: 'create', 'read', 'update', 'delete'
+  state     Int     @default(1) // 1: activo, 0: inactivo
+  createdAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  authRolePermissions authRolePermissions[]
+
+}
+
+model authRolePermissions {
+  id           String @id @default(cuid())
+  idAuthRoles        String
+  idAuthPermissions  String
+  state     Int     @default(1) // 1: activo, 0: inactivo
+  role       authRoles       @relation(fields: [idAuthRoles ], references: [id], onDelete: Cascade)
+  authPermissions authPermissions @relation(fields: [idAuthPermissions], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@unique([idAuthRoles , idAuthPermissions])
+}
+
+model authPasswordResetTokens {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  idAuthUser    String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  state     Int     @default(1) // 1: activo, 0: inactivo
+  createdAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  authUser authUser @relation(fields: [idAuthUser], references: [id], onDelete: Cascade)
+
+}
+// ===============================
+// Gestion producto
+// ===============================

@@ -1,0 +1,47 @@
+
+services:
+  # mysql:
+  #   image: mysql:8.0
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: Kenny123456!
+  #     MYSQL_DATABASE: AuthDB
+  #     MYSQL_USER: myuser
+  #     MYSQL_PASSWORD: 123456
+  #   ports:
+  #     - '3306:3306'
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #   command: --default-authentication-plugin=mysql_native_password
+  #   healthcheck:
+  #     test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+  #     timeout: 20s
+  #     retries: 10
+
+  project-nova-back:
+    # depends_on:
+    #   mysql:
+    #     condition: service_healthy
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./src:/usr/src/app/src
+      - ./prisma:/usr/src/app/prisma
+      - /usr/src/app/node_modules # Excluir node_modules del mount
+    command: npm run start:dev
+    environment:
+      - PORT=3000
+      - DATABASE_URL=mysql://root:Kenny123456!@mysql:3306/AuthDB
+      - JWT_SECRET=tu-clave-secreta-muy-segura
+      - JWT_EXPIRES_IN=3h
+      - EMAIL_HOST=mail.factosysperu.com
+      - EMAIL_PORT=465
+      - EMAIL_USER=recovery@factosysperu.com
+      - EMAIL_PASS=pQqJodjCqOtDo0ey
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
